@@ -12,8 +12,9 @@
       @endif
       <div class="col-md-8">
         <div class="card table-responsive shadow-sm rounded-4">
-          <div class="card-header bg-transparent py-3">
+          <div class="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
             <h3 class="mb-0">Data category</h3>
+            <button class="btn btn-primary" onclick="handleCreate()"><i class="bi bi-plus"></i></button>
           </div>
           <div class="card-body">
             <table class="m-0 table table-hover table-bordered">
@@ -31,7 +32,8 @@
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $c->name }}</td>
                     <td style="width: 9px;white-space: nowrap">
-                      <button class="btn btn-warning">
+                      <button class="btn btn-warning"
+                        onclick="handleEdit({{ $c->id }}, '{{ route('category.update', $c->id) }}')">
                         <i class="bi bi-pencil-square"></i>
                       </button>
                     </td>
@@ -48,15 +50,16 @@
         </div>
       </div>
       <div class="col-md-4">
-        <form action="{{ route('category.store') }}" method="POST" class="card shadow-sm rounded-4">
+        <form action="{{ route('category.store') }}" id="form-category" method="POST" class="card shadow-sm rounded-4">
           @csrf
+          <input type="hidden" name="_method" id="form-method">
           <div class="card-header bg-transparent py-3 mb-1">
-            <h3 class="mb-0">Tambah Category</h3>
+            <h3 class="mb-0" id="form-header">Tambah Kategori</h3>
           </div>
           <div class="card-body">
             <div class="mb-5">
               <label for="name">Nama</label>
-              <input type="text" class="form-control" name="name">
+              <input type="text" id="category-name" class="form-control" name="name">
             </div>
 
             <div class="d-flex gap-2 justify-content-end">
@@ -69,3 +72,22 @@
     </div>
   </div>
 @endsection
+
+@push('scripts')
+  <script>
+    function handleCreate() {
+      $("#form-header").text("Tambah Kategori");
+    }
+
+    function handleEdit(category_id, url) {
+      $("#form-header").text("Edit Kategori");
+
+      $('#form-method').val('PUT');
+      $('#form-category').attr('action', url);
+
+      $.get(`/category/${category_id}/edit`, (data) => {
+        $('#category-name').val(data.name);
+      });
+    }
+  </script>
+@endpush

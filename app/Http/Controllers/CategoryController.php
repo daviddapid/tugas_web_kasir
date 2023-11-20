@@ -33,7 +33,7 @@ class CategoryController extends Controller
             'name' => $request->name
         ]);
 
-        return back()->with('success', 'Success menambah data');
+        return back()->with('success', 'Success menambah data 😊👌');
     }
 
     /**
@@ -47,17 +47,17 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Category $category)
     {
-        //
+        return $category;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        dd($category);
     }
 
     /**
