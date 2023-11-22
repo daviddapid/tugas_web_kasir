@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -11,7 +13,9 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view('item');
+        $items = Item::all();
+        $categories = Category::all();
+        return view('item', compact('items', 'categories'));
     }
 
     /**
@@ -27,7 +31,9 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Item::create($request->except('_token'));
+
+        return back()->with('success', 'Sukses menambah data baru');
     }
 
     /**

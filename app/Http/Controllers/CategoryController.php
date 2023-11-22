@@ -57,14 +57,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        dd($category);
+        $category->name = $request->name;
+        $category->save();
+        return back()->with('success', 'Sukses memperbarui data');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return back()->with('success', 'Sukses menghapus data');
     }
 }
