@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ItemController extends Controller
 {
@@ -31,6 +32,25 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'name' => 'required|max:255|unique:items,name',
+            'price' => 'required',
+            'stock' => 'required',
+            'category_id' => 'required',
+        ];
+        $messages = [
+            'required' => 'kolom :attribute tidak boleh kosong',
+            'unique' => 'produk ":input" sudah ada di database',
+            'jul' => 'lontong'
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput()->with('error-store', [
+                'url' => route('item.store'),
+            ]);
+        }
+
         Item::create($request->except('_token'));
 
         return back()->with('success', 'Sukses menambah data baru');
@@ -47,24 +67,46 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Item $item)
     {
-        //
+        return $item;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Item $item)
     {
-        //
+        $rules = [
+            'name' => 'required|max:255|unique:items,name,' . $item->id,
+            'price' => 'required',
+            'stock' => 'required',
+            'category_id' => 'required',
+        ];
+        $messages = [
+            'required' => 'kolom :attribute tidak boleh kosong',
+            'unique' => 'produk ":input" sudah ada di database'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput()->with('error-update', [
+                'urlEdit' => route('item.edit', $item),
+                'urlUpdate' => route('item.update', $item),
+            ]);
+        }
+
+        $item->update($request->except(['_token', '_method']));
+        return back()->with('success', 'Sukses menambah data');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Item $item)
     {
-        //
+        $item->delete();
+        return back()->with('success', 'Sukses menghapus data');
     }
 }

@@ -60,13 +60,19 @@
           </div>
           <div class="card-body">
             <div class="mb-5">
-              <label for="name">Nama</label>
-              <input type="text" id="category-name" class="form-control" name="name">
+              <label for="name" class="@error('name') text-danger @enderror">Nama</label>
+              <input type="text" id="category-name"
+                class="form-control @error('name') text-danger is-invalid @enderror" name="name"
+                value="{{ old('name') }}">
+
+              @error('name')
+                <small class="text-danger">{{ $message }}</small>
+              @enderror
             </div>
 
             <div class="d-flex gap-2 justify-content-end">
-              <button class="btn btn-outline-danger w-100">Reset</button>
-              <button class="btn btn-primary w-100" type="submit">Tambah</button>
+              <button class="btn btn-outline-danger w-100" type="reset">Reset</button>
+              <button class="btn btn-primary w-100" type="submit" id="btn-submit">Tambah</button>
             </div>
           </div>
         </form>
@@ -104,6 +110,7 @@
       $('#category-name').val('');
       $('#form-method').val('POST');
       $('#form-category').attr('action', url);
+      $('#btn-submit').text('Tambah');
     }
 
     function handleEdit(category_id, url) {
@@ -111,6 +118,7 @@
 
       $('#form-method').val('PUT');
       $('#form-category').attr('action', url);
+      $('#btn-submit').text('Update');
 
       $.get(`/category/${category_id}/edit`, (data) => {
         $('#category-name').val(data.name);
@@ -118,9 +126,18 @@
     }
 
     function handleDelete(url, category) {
-      console.log(category);
       $('#form-delete').attr('action', url);
       $('#category-name-delete').text(category.name);
     }
   </script>
+
+  @if (session('error-store'))
+    <script>
+      handleCreate("{{ session('error-store')['url'] }}")
+    </script>
+  @elseif(session('error-update'))
+    <script>
+      handleEdit("{{ session('error-update')['url'] }}", "{{ session('error-update')['category_id'] }}")
+    </script>
+  @endif
 @endpush
