@@ -146,7 +146,7 @@
     }
 
     function handleEdit(urlEdit, urlUpdate) {
-      $.get(urlEdit, function(data, textStatus, jqXHR) {
+      $.get(urlEdit, function(data) {
         $('#input-name').val(data.name);
         $('#input-price').val(data.price);
         $('#input-stock').val(data.stock);

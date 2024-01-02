@@ -22,29 +22,20 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Lontong</td>
-                  <td>Makanan</td>
-                  <td>Rp. 10.000</td>
-                  <td>19</td>
-                  <td style="width: 9px;white-space: nowrap; text-align: center">
-                    <button class="btn btn-success">
-                      <i class="bi bi-plus"></i>
-                    </button>
-                  </td>
-                <tr>
-                  <td>1</td>
-                  <td>Lontong</td>
-                  <td>Makanan</td>
-                  <td>Rp. 10.000</td>
-                  <td>19</td>
-                  <td style="width: 9px;white-space: nowrap; text-align: center">
-                    <button class="btn btn-success">
-                      <i class="bi bi-plus"></i>
-                    </button>
-                  </td>
-                </tr>
+                @foreach ($items as $ix => $i)
+                  <tr>
+                    <td>{{ $ix + 1 }}</td>
+                    <td>{{ $i->name }}</td>
+                    <td>{{ $i->category->name }}</td>
+                    <td>Rp. {{ number_format($i->price) }}</td>
+                    <td>{{ $i->stock }}</td>
+                    <td style="width: 9px;white-space: nowrap; text-align: center">
+                      <a href="{{ route('transaction.addToCart', $i) }}" class="btn btn-success">
+                        <i class="bi bi-plus"></i>
+                      </a>
+                    </td>
+                  <tr>
+                @endforeach
               </tbody>
             </table>
           </div>
@@ -68,24 +59,23 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Jeruk</td>
-                    <td>3</td>
-                    <td>Rp. 20.000</td>
-                    <td style="width: 0px; white-space: nowrap">
-                      <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>Jeruk</td>
-                    <td>3</td>
-                    <td>Rp. 20.000</td>
-                    <td style="width: 0px; white-space: nowrap">
-                      <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
-                    </td>
-                  </tr>
+                  @if (session('cart'))
+                    @foreach (session('cart') as $ix => $item)
+                      <tr>
+                        <td>{{ $ix + 1 }}</td>
+                        <td>Jeruk</td>
+                        <td>3</td>
+                        <td>Rp. 20.000</td>
+                        <td style="width: 0px; white-space: nowrap">
+                          <button class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                        </td>
+                      </tr>
+                    @endforeach
+                  @else
+                    <tr>
+                      <td colspan="9" class="text-center">Tidak Ada data di Keranjang anda🛒</td>
+                    </tr>
+                  @endif
                 </tbody>
               </table>
               <div class="mb-4">

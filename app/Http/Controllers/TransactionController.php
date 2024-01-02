@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -11,7 +12,13 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return view('transaction');
+        $items = Item::all();
+        return view('transaction', compact('items'));
+    }
+
+    public function addToCart(Item $item)
+    {
+        $cart = session()->get('cart');
     }
 
     /**

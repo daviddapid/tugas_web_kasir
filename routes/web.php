@@ -25,3 +25,4 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::resource('/category', CategoryController::class);
 Route::resource('/item', ItemController::class);
 Route::resource('/transaction', TransactionController::class);
+Route::get('/transaction/{item}/add-to-cart', [TransactionController::class, 'addToCart'])->name('transaction.addToCart');
