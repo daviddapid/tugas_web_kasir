@@ -22,7 +22,12 @@ Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('/category', CategoryController::class);
-Route::resource('/item', ItemController::class);
-Route::resource('/transaction', TransactionController::class);
-Route::get('/transaction/{item}/add-to-cart', [TransactionController::class, 'addToCart'])->name('transaction.addToCart');
+Route::middleware('auth')->group(function () {
+   Route::resource('/category', CategoryController::class);
+   Route::resource('/item', ItemController::class);
+   Route::resource('/transaction', TransactionController::class);
+   Route::get('/transaction/{item}/add-to-cart', [TransactionController::class, 'addToCart'])->name('transaction.addToCart');
+   Route::post('/transaction/{item}/update-cart', [TransactionController::class, 'updateCart'])->name('transaction.updateCart');
+   Route::post('/transaction/{item}/delete', [TransactionController::class, 'deleteItem'])->name('transaction.delete');
+   Route::get('/reset', [TransactionController::class, 'reset']);
+});

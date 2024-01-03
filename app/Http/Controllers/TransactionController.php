@@ -7,18 +7,59 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $items = Item::all();
-        return view('transaction', compact('items'));
+        $grandtotal = 0;
+        if (session('cart')) {
+            foreach (session('cart') as $item) {
+                $grandtotal += $item['qty'] * $item['price'];
+            }
+        }
+        return view('transaction', compact('items', 'grandtotal'));
     }
 
     public function addToCart(Item $item)
     {
-        $cart = session()->get('cart');
+        $cart = session('cart');
+        if ($cart[$item->id] ?? false) {
+            $cart[$item->id]['qty']++;
+            $cart[$item->id]['subtotal'] = $item->price * $cart[$item->id]['qty'];
+        } else {
+            $cart[$item->id] = [
+                'id' => $item->id,
+                'name' => $item->name,
+                'qty' => 1,
+                'price' => $item->price,
+                'subtotal' => $item->price
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        return back();
+    }
+    function updateCart(Request $request, Item $item)
+    {
+        $cart = session('cart');
+        $cart[$item->id]['qty'] = $request['qty-' . $item->id];
+        $cart[$item->id]['subtotal'] = $item->price * $cart[$item->id]['qty'];
+
+        session()->put('cart', $cart);
+
+        return back();
+    }
+    function deleteItem(Item $item)
+    {
+        $cart = session('cart');
+        unset($cart[$item->id]);
+        session()->put('cart', $cart);
+        return back();
     }
 
     /**
@@ -67,5 +108,9 @@ class TransactionController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    function reset()
+    {
+        session()->forget('cart');
     }
 }
