@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Transaction;
+use App\Models\TransactionDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -75,15 +80,38 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        $t = Transaction::create([
+            ...$request->only('total', 'pay_total'),
+            'user_id' => Auth::user()->id,
+            'date' => Carbon::now()
+        ]);
+
+        $cart = session()->get('cart');
+        foreach ($cart as $item) {
+            TransactionDetail::create([
+                'transaction_id' => $t->id,
+                'item_id' => $item['id'],
+                'qty' => $item['qty'],
+                'subtotal' => $item['subtotal']
+            ]);
+
+            $itemDb = Item::find($item['id']);
+            $itemDb->stock -= $item['qty'];
+            $itemDb->save();
+        }
+        session()->forget('cart');
+        DB::commit();
+
+        return redirect()->route('transaction.show', $t);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Transaction $transaction)
     {
-        //
+        return view('invoice', compact('transaction'));
     }
 
     /**

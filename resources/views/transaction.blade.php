@@ -64,7 +64,7 @@
                                  @foreach (session('cart') as $ix => $item)
                                     @csrf
                                     <tr>
-                                       <td>{{ $ix + 1 }}</td>
+                                       <td>{{ $loop->iteration }}</td>
                                        <td>{{ $item['name'] }}</td>
                                        <td>
                                           <input type="number" class="form-control input-qty" name="qty-{{ $item['id'] }}"
@@ -95,14 +95,15 @@
                            @endif
                         </tbody>
                      </table>
-                     <div class="mb-4">
+                     <form id="form-checkout" class="mb-4" action="{{ route('transaction.store') }}" method="POST">
+                        @csrf
                         <div class="row mb-1">
                            <div class="col-md-4">
                               <label for="grand" class="form-label">Grand total</label>
                            </div>
                            <div class="col-md-8 d-flex align-items-center gap-2">
                               <span>:</span>
-                              <input type="text" class="form-control" value="{{ $grandtotal }}">
+                              <input type="number" class="form-control" name="total" value="{{ $grandtotal }}">
                            </div>
                         </div>
                         <div class="row">
@@ -111,15 +112,15 @@
                            </div>
                            <div class="col-md-8 d-flex align-items-center gap-2">
                               <span>:</span>
-                              <input type="text" class="form-control">
+                              <input type="number" name="pay_total" min="0" value="0" class="form-control">
                            </div>
                         </div>
-                     </div>
+                     </form>
                   </div>
 
                   <div class="d-flex gap-2 justify-content-end">
                      <button class="btn btn-outline-danger w-100">Reset</button>
-                     <button class="btn btn-primary w-100">Tambah</button>
+                     <button class="btn btn-primary w-100" form="form-checkout" type="submit">Checkout</button>
                   </div>
                </div>
             </div>
