@@ -74,11 +74,12 @@
    </style>
 </head>
 
-<body>
+<body onload="printOut()">
    <div class="container">
       <div class="header" style="margin-bottom: 30px;">
-         <h2>Toko Smesa</h2>
-         <small> Jl. Smea No. 4, Wonokromo, Surabaya, Jawa Timur</small>
+         <h2>Toko David Gadgetin</h2>
+         <small> Jl. David Pekerti No. 19, Bungurasih, Sidoarjo, Jawa Timur</small>
+         <img src="/assets/img/poto.jpg" alt="" style="width: 100%; display: block">
       </div>
       <hr>
       <div class="flex-container-1">
@@ -133,6 +134,19 @@
          <p>Silahkan berkunjung kembali</p>
       </div>
    </div>
+   <script>
+      function printOut() {
+         window.print()
+         setTimeout(() => {
+            self.close()
+         }, 1000);
+      }
+      window.onafterPrint = () => {
+         window.location.href = "{{ route('transaction.index') }}"
+      }
+   </script>
 </body>
+
+
 
 </html>

@@ -32,16 +32,17 @@ class TransactionController extends Controller
     public function addToCart(Item $item)
     {
         $cart = session('cart');
+        if ($item->stock <= 0) {
+            return back()->with('failed', 'Stok barang ' . $item->name . ' tidak mencukupi');
+        }
         if ($cart[$item->id] ?? false) {
             $cart[$item->id]['qty']++;
             $cart[$item->id]['subtotal'] = $item->price * $cart[$item->id]['qty'];
         } else {
             $cart[$item->id] = [
-                'id' => $item->id,
-                'name' => $item->name,
+                ...$item->only('id', 'name', 'price', 'stock'),
                 'qty' => 1,
-                'price' => $item->price,
-                'subtotal' => $item->price
+                'subtotal' => $item->price,
             ];
         }
 

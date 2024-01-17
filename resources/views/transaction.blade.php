@@ -3,6 +3,11 @@
 @section('content')
    <div class="container mt-3">
       <h1 class="mb-4">Transaction</h1>
+      @if (session('failed'))
+         <div class="alert alert-danger" role="alert">
+            {{ session('failed') }}
+         </div>
+      @endif
       <div class="row">
          <div class="col-md-7">
             <div class="card table-responsive shadow-sm rounded-4">
@@ -69,7 +74,8 @@
                                        <td>
                                           <input type="number" class="form-control input-qty" name="qty-{{ $item['id'] }}"
                                              onchange="handleEdit({{ $item['id'] }}, {{ $item['price'] }})"
-                                             id="qty-{{ $item['id'] }}" value="{{ $item['qty'] }}" min="0">
+                                             id="qty-{{ $item['id'] }}" value="{{ $item['qty'] }}" min="0"
+                                             max="{{ $item['stock'] }}">
                                        </td>
                                        <td>Rp. <span
                                              id="subtotal-{{ $item['id'] }}">{{ number_format($item['subtotal']) }}</span>
