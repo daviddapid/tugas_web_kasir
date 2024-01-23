@@ -35,9 +35,13 @@
                               <td>Rp. {{ number_format($i->price) }}</td>
                               <td>{{ $i->stock }}</td>
                               <td style="width: 9px;white-space: nowrap; text-align: center">
-                                 <a href="{{ route('transaction.addToCart', $i) }}" class="btn btn-success">
-                                    <i class="bi bi-plus"></i>
-                                 </a>
+                                 @if ($i->stock < 1)
+                                    <button class="btn btn-secondary" disabled> + </button>
+                                 @else
+                                    <a href="{{ route('transaction.addToCart', $i) }}" class="btn btn-success">
+                                       <i class="bi bi-plus"></i>
+                                    </a>
+                                 @endif
                               </td>
                            <tr>
                         @endforeach

@@ -82,6 +82,9 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
+        if ($request->pay_total < $request->total) {
+            return back()->with('failed', 'Pembayaran kurang');
+        }
         $t = Transaction::create([
             ...$request->only('total', 'pay_total'),
             'user_id' => Auth::user()->id,

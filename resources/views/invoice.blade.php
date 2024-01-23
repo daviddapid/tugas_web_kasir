@@ -141,7 +141,7 @@
             self.close()
          }, 1000);
       }
-      window.onafterPrint = () => {
+      window.onafterprint = function(e) {
          window.location.href = "{{ route('transaction.index') }}"
       }
    </script>
